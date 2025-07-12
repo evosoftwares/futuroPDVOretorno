@@ -10,17 +10,19 @@ service cloud.firestore {
 
     // Função para obter os papéis (roles) do usuário que está fazendo a requisição.
     function getRequestingUserRoles() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userRoles;
+      return exists(/databases/$(database)/documents/users/$(request.auth.uid)) 
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userRoles 
+        : [];
     }
 
     // --- REGRAS PRINCIPAIS ---
 
     // USERS:
     // - Leitura e escrita permitida apenas para o próprio usuário.
-    // - Criação permitida apenas pelo próprio usuário.
+    // - Criação permitida para usuários autenticados criando seu próprio documento.
     match /users/{userId} {
       allow read, write: if isOwner(userId);
-      allow create: if isOwner(userId);
+      allow create: if request.auth != null && request.auth.uid == userId;
     }
 
     // PARTNER PROFILES:

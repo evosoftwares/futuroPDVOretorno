@@ -3,27 +3,41 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
   "flutter": {
     "platforms": {
       "android": {
         "default": {
-          "projectId": "futuropdvfinal",
-          "appId": "1:233706092545:android:3ed7a4e9f160537c6f2800",
+          "projectId": "evopdv-app",
+          "appId": "1:299508138162:android:3766e544c9e1f0bf9e09ab",
           "fileOutput": "android/app/google-services.json"
         }
       },
       "ios": {
         "default": {
-          "projectId": "futuropdvfinal",
-          "appId": "1:233706092545:ios:f408a6bf87a795b96f2800",
+          "projectId": "evopdv-app",
+          "appId": "1:299508138162:ios:03bcf738b821b8949e09ab",
           "uploadDebugSymbols": false,
           "fileOutput": "ios/Runner/GoogleService-Info.plist"
         }
       },
       "macos": {
         "default": {
-          "projectId": "futuropdvfinal",
-          "appId": "1:233706092545:ios:f408a6bf87a795b96f2800",
+          "projectId": "evopdv-app",
+          "appId": "1:299508138162:ios:03bcf738b821b8949e09ab",
           "uploadDebugSymbols": false,
           "fileOutput": "macos/Runner/GoogleService-Info.plist"
         }
