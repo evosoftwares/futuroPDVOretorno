@@ -1,0 +1,33 @@
+{
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "futuropdvfinal",
+          "appId": "1:233706092545:android:3ed7a4e9f160537c6f2800",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "futuropdvfinal",
+          "appId": "1:233706092545:ios:f408a6bf87a795b96f2800",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "futuropdvfinal",
+          "appId": "1:233706092545:ios:f408a6bf87a795b96f2800",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      }
+    }
+  }
+}

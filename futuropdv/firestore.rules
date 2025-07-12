@@ -1,0 +1,67 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Função para verificar se o usuário está autenticado e é o dono do documento.
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // Função para obter os papéis (roles) do usuário que está fazendo a requisição.
+    function getRequestingUserRoles() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userRoles;
+    }
+
+    // --- REGRAS PRINCIPAIS ---
+
+    // USERS:
+    // - Leitura e escrita permitida apenas para o próprio usuário.
+    // - Criação permitida apenas pelo próprio usuário.
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+      allow create: if isOwner(userId);
+    }
+
+    // PARTNER PROFILES:
+    // - Leitura e escrita permitida para o próprio parceiro.
+    // - Leitura permitida para usuários com o papel 'empresa'.
+    match /partnerProfiles/{userId} {
+      allow read, write: if isOwner(userId);
+      allow read: if getRequestingUserRoles().hasAny(['empresa']);
+    }
+
+    // DRIVER PROFILES:
+    // - Leitura e escrita permitida apenas para o próprio motorista.
+    match /driverProfiles/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // COMPANY PROFILES:
+    // - Leitura e escrita permitida apenas para a própria empresa.
+    match /companyProfiles/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+    
+    // WALLETS & TRANSACTIONS:
+    // - Apenas leitura para o dono da carteira.
+    // - Escrita bloqueada diretamente; deve ser feita via Cloud Functions.
+    match /wallets/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if false; 
+
+      match /transactions/{transactionId} {
+        allow read: if isOwner(userId);
+        allow write: if false;
+      }
+    }
+
+    // Por padrão, todas as outras coleções estão bloqueadas até que
+    // regras explícitas sejam definidas para elas.
+    // Exemplo para 'missions' (a ser detalhado depois):
+    // match /missions/{missionId} {
+    //   allow read: if request.auth != null;
+    //   allow write: if getRequestingUserRoles().hasAny(['empresa']);
+    // }
+  }
+} 
